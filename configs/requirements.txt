@@ -1,0 +1,8 @@
+plotly
+scikit-learn
+pre-commit
+python-dotenv
+tensorflow
+torch
+pytest
+pyarraow
