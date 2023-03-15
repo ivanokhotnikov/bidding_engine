@@ -1,13 +1,10 @@
-scikit-learn
-ipykernel
 pre-commit
 python-dotenv
-tensorflow
-torch
 yapf
 ydata-profiling
 pytest
 pyarrow
 google-ads
-transformers
 protobuf==3.20.3
+bertopic
+umap-learn
