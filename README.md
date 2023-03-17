@@ -49,4 +49,4 @@ The Cpc update is proposed to be based on the trend of `Impressions` as a proxy 
 
 3. Forecasting
 
-    For each cluster perform univariate single-step forecasting of `Impressions`. If the forecast is bigger than the moving average projection and tolerance -> 'push', if smaller -> 'pull', if within the tolerance -> 'zero'
+    For each cluster perform multi-variate single-step forecasting of `Cpc`. If the forecast is bigger than the moving average projection and tolerance -> 'push', if smaller -> 'pull', if within the tolerance -> 'zero'

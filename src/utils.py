@@ -1,5 +1,5 @@
 import os
-
+import numpy as np
 import matplotlib.pyplot as plt
 import torch
 
@@ -52,3 +52,21 @@ class EarlyStopping:
         os.makedirs(path, exist_ok=True)
         torch.save(model, os.path.join(path, 'checkpoint.pth'))
         self.val_loss_min = val_loss
+
+
+def create_sequences(df, lookback, target, inference, univariate):
+    x_train, y_train = [], []
+    if univariate:
+        for i in range(lookback, len(df)):
+            x_train.append(df.iloc[i - lookback:i][target])
+            y_train.append(df.iloc[i][target])
+        x_train = np.expand_dims(x_train, axis=-1)
+    else:
+        for i in range(lookback, len(df)):
+            x_train.append(df.iloc[i - lookback:i])
+            y_train.append(df.iloc[i][target])
+        x_train = np.stack(x_train)
+    y_train = np.expand_dims(y_train, axis=-1)
+    if inference:
+        return x_train
+    return x_train, y_train
