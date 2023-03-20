@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import torch
 
 
-def visual(true, preds, name):
+def plot_forecast(true, preds, name):
     plt.figure()
     plt.plot(true, label='test ground truth', linewidth=2)
     if preds is not None:
@@ -12,6 +12,79 @@ def visual(true, preds, name):
     plt.legend()
     plt.savefig(name, bbox_inches='tight')
     plt.close()
+
+
+def plot_keyword(df, criterion: int, features: list) -> None:
+    '''
+    The plot_keyword function takes a dataframe, criterion ID, and list of features to plot.
+    It then plots the specified features for the given criterion ID.
+
+    Parameters
+    ----------
+        df
+            Pass the dataframe to the function
+        criterion
+            Select the keyword to plot
+        features
+            Specify which columns to plot
+    '''
+    for feature in features:
+        plt.plot(df.loc[df['CriterionId'] == criterion, 'Date'],
+                 df.loc[df['CriterionId'] == criterion, feature],
+                 label=feature)
+    plt.title('Keyword ID {}\nUnique keywords {}'.format(
+        criterion, df.loc[df['CriterionId'] == criterion,
+                          'Criteria'].unique()))
+    plt.xticks(rotation=45)
+    if len(features) == 1:
+        plt.ylabel(feature)
+    else:
+        plt.legend()
+    plt.show()
+
+
+def plot_filled(df, criterion: int, features: list) -> None:
+    '''
+    The plot_filled function takes a dataframe, criterion ID, and list of features as input.
+    It then plots the filled values for each feature in the list against the date.
+    If there is only one feature in the list, it labels that axis with that feature name.
+
+    Parameters
+    ----------
+        df
+            Pass the dataframe to the function
+        criterion
+            Filter the dataframe to only show the rows that have a criterionid equal to criterion
+        features
+            Specify which columns to plot
+    '''
+    from matplotlib.markers import MarkerStyle
+
+    markers = list(MarkerStyle.markers.keys())[1:len(features) + 1]
+    plt.figure()
+    for feature, marker in zip(features, markers):
+        if 'filled' in feature:
+            plt.plot(df.loc[(df['CriterionId'] == criterion)
+                            & (df['Cost'].isna()), 'Date'],
+                     df.loc[(df['CriterionId'] == criterion) &
+                            (df['Cost'].isna()), feature],
+                     marker,
+                     label=feature)
+        else:
+            plt.plot(df.loc[df['CriterionId'] == criterion, 'Date'],
+                     df.loc[df['CriterionId'] == criterion, feature],
+                     label=feature)
+    plt.title('Keyword ID {}\nUnique keywords {}'.format(
+        criterion,
+        df.sort_values(
+            by=['CriterionId', 'Date']).loc[df['CriterionId'] == criterion,
+                                            'Criteria'].unique()))
+    plt.xticks(rotation=45)
+    if len(features) == 1:
+        plt.ylabel(feature)
+    else:
+        plt.legend()
+    plt.show()
 
 
 class EarlyStopping:
