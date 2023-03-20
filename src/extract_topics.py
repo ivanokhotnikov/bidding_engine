@@ -86,11 +86,15 @@ def save_topics(kwds: list, topic_model: BERTopic) -> None:
               'w') as f:
         json.dump(topic_model.get_topics(), f)
     topic_model.get_document_info(kwds).to_csv(os.path.join(
-        os.environ['INTERIM_DATA_PATH'], 'topics.csv'),
+        os.environ['INTERIM_DATA_PATH'], 'all_kwds.csv'),
                                                index=None)
     topic_model.get_topic_info().to_csv(os.path.join(
         os.environ['INTERIM_DATA_PATH'], 'topics_info.csv'),
                                         index=None)
+    topic_model.get_document_info(kwds).loc[:, ['Document', 'Name']].groupby(
+        by='Name').agg(lambda x: ' '.join(x)).to_csv(os.path.join(
+            os.environ['INTERIM_DATA_PATH'], 'topics.csv'),
+                                                     index=None)
 
 
 def extract_topics(interim_data_file: str) -> None:
