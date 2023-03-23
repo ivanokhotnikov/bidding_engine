@@ -35,7 +35,9 @@ pip install -r config/requirements-dev.txt
 
 ## Strategy
 
-The Cpc update is proposed to be based on the trend of `Impressions` as a proxy for the market price of the keyword.
+The general strategy is to learn and replicate the historical strategy by implementing multivariate `Cpc` forecasting with the available keyword performance metrics from Google Ads Reporting. Alternatively, the `Cpc` update can be proposed to be based on the trend of `Impressions` as a proxy for the market price of the keyword.
+
+Due to a number of individual keywords and existence of broad-match modifiers, it is suggested to semantically cluster the keywords using pre-trained embeddings.
 
 ### Implementation plan
 
@@ -50,3 +52,8 @@ The Cpc update is proposed to be based on the trend of `Impressions` as a proxy 
 3. Forecasting
 
     For each cluster perform multi-variate single-step forecasting of `Cpc`. If the forecast is bigger than the moving average projection and tolerance -> 'push', if smaller -> 'pull', if within the tolerance -> 'zero'
+
+
+### Development
+
+[`nbs`](./nbs/) directory contains the Jupyter notebooks used to explore the data and prototype. The working Python modules, content of which can be used to build training and inference workflows, are located in [`src`](./src/) directory.
