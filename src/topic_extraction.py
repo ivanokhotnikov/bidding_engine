@@ -1,6 +1,6 @@
+import argparse
 import json
 import os
-from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -38,7 +38,10 @@ def visualize_topics(kwds: list,
     """
     kwds_topic_df = topic_model.get_document_info(
         kwds).loc[:, ['Document', 'Topic', 'Name']]
-
+    if os.path.isdir(os.environ['IMAGES_PATH']):
+        for f in os.listdir(os.environ['IMAGES_PATH']):
+            os.remove(os.path.join(os.environ['IMAGES_PATH'], f))
+    os.makedirs(os.environ['IMAGES_PATH'], exist_ok=True)
     for topic in sorted(kwds_topic_df['Topic'].unique()):
         wordcloud = WordCloud().generate(
             kwds_topic_df.loc[kwds_topic_df['Topic'] == topic,
@@ -105,10 +108,6 @@ def save_topics_info(kwds: list, topic_model: BERTopic) -> None:
     topic_model.get_document_info(kwds).loc[:, ['Document', 'Name']].groupby(
         by='Name').agg(lambda x: ' '.join(x)).to_csv(
             os.path.join(os.environ['INTERIM_DATA_PATH'], 'topics.csv'))
-
-
-def save_data_per_topic():
-    pass
 
 
 def extract_topics(interim_data_file: str) -> None:
@@ -191,7 +190,10 @@ def save_processed_data(interim_df, topic_model):
               'r') as f:
         target = json.load(f)
     features_date = features + ['Date', target]
-    os.system(f'rm -rf {os.environ["PROCESSED_DATA_PATH"]}/*')
+    if os.path.isdir(os.environ['PROCESSED_DATA_PATH']):
+        for f in os.listdir(os.environ['PROCESSED_DATA_PATH']):
+            os.remove(os.path.join(os.environ['PROCESSED_DATA_PATH'], f))
+    os.makedirs(os.environ['PROCESSED_DATA_PATH'], exist_ok=True)
     forecast_data = {}
     for topic in topic_model.topic_labels_.keys():
         forecast_data[topic] = processed_df.loc[processed_df['Topic'] == topic,
@@ -204,7 +206,7 @@ def save_processed_data(interim_df, topic_model):
 
 if __name__ == '__main__':
     load_dotenv()
-    parser = ArgumentParser()
+    parser = argparse.ArgumentParser()
     parser.add_argument('--interim-data-file',
                         type=str,
                         default='interim_data.feather')
