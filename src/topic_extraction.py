@@ -9,7 +9,7 @@ from bertopic.vectorizers import ClassTfidfTransformer
 from dotenv import load_dotenv
 from hdbscan import HDBSCAN
 from sentence_transformers import SentenceTransformer
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction import text
 from umap import UMAP
 from wordcloud import WordCloud
 
@@ -142,7 +142,8 @@ def extract_topics(interim_data_file: str) -> None:
                             metric='euclidean',
                             cluster_selection_method='eom',
                             prediction_data=True)
-    vectorizer_model = CountVectorizer(stop_words='english')
+    stop_words = text.ENGLISH_STOP_WORDS.union(['holiday', 'holidays'])
+    vectorizer_model = text.CountVectorizer(stop_words=list(stop_words))
     ctfidf_model = ClassTfidfTransformer()
     topic_model = BERTopic(
         embedding_model=embedding_model,  # Step 1 - Extract embeddings
